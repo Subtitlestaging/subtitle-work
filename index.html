@@ -270,6 +270,8 @@ body.sheet-open .nav{opacity:0;pointer-events:none}
   .hero{height:100vh}
   .reveal{opacity:1;transform:none}
 }
+video::-webkit-media-controls-start-playback-button{display:none!important;-webkit-appearance:none}
+video::-webkit-media-controls{display:none!important}
 </style>
 </head>
 <body>
@@ -725,6 +727,36 @@ body.sheet-open .nav{opacity:0;pointer-events:none}
       if (openSheetEl) closeSheet();
     }
   });
+
+  /* ── VIDEO AUTOPLAY (mobile) ─────── */
+  /* Phones can skip the autoplay attribute (Low Power Mode, data saver, off screen
+     carousel slides). Start each video when it comes into view, pause it when it
+     leaves, and retry on the first touch or scroll, which counts as a user gesture. */
+  var vids = [].slice.call(document.querySelectorAll('video'));
+  var tryPlay = function(v){
+    v.muted = true; v.defaultMuted = true; v.playsInline = true;
+    var p = v.play(); if (p && p.catch) p.catch(function(){});
+  };
+  if ('IntersectionObserver' in window){
+    var vio = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting) tryPlay(en.target);
+        else if (!en.target.paused) en.target.pause();
+      });
+    }, { threshold: 0.25 });
+    vids.forEach(function(v){ vio.observe(v); });
+  } else { vids.forEach(tryPlay); }
+  var kick = function(){
+    vids.forEach(function(v){
+      var r = v.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth) tryPlay(v);
+    });
+  };
+  ['touchstart','scroll','click'].forEach(function(t){
+    window.addEventListener(t, kick, { passive: true, once: true });
+  });
+  var track = document.getElementById('track');
+  if (track) track.addEventListener('scroll', kick, { passive: true });
 
   /* ── REVEALS ────────────────────── */
   var io = new IntersectionObserver(function(entries){

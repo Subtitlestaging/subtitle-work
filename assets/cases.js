@@ -21,7 +21,7 @@ window.renderCaseTiles = function (el, opts) {
   var list = window.SUBTITLE_CASES.filter(function (c) { return c.id !== opts.exclude; });
   if (opts.limit) list = list.slice(0, opts.limit);
   el.innerHTML = list.map(function (c) {
-    var live = c.status === 'live';
+    var live = c.status === 'live' && !opts.noLinks;
     var cover = c.img
       ? '<img src="' + c.img + '" alt="" loading="lazy">'
       : '';
@@ -29,12 +29,12 @@ window.renderCaseTiles = function (el, opts) {
     var inner =
       '<div class="tile-cover' + (c.img ? ' has-img' : '') + (c.dark ? ' dark' : '') + '"' + style + '>' + cover +
         (c.img ? '' : '<span class="tile-mark" aria-hidden="true">' + c.mark + '</span>') +
-        (live ? '' : '<span class="tile-soon">Coming soon</span>') +
+        (c.status === 'live' ? '' : '<span class="tile-soon">Coming soon</span>') +
       '</div>' +
       '<div class="tile-info"><h3>' + c.name + (live ? ' <span aria-hidden="true">&#8599;</span>' : '') + '</h3>' +
         (c.tags.length ? '<p>' + c.tags.join(' · ') + '</p>' : '') + '</div>';
     return live
       ? '<a class="tile" href="' + c.href + '">' + inner + '</a>'
-      : '<div class="tile is-soon" aria-label="' + c.name + ', case study coming soon">' + inner + '</div>';
+      : '<div class="tile is-soon"' + (c.status === 'live' ? '' : ' aria-label="' + c.name + ', case study coming soon"') + '>' + inner + '</div>';
   }).join('');
 };

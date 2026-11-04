@@ -439,7 +439,6 @@ body.sheet-open .nav{opacity:0;pointer-events:none}
         <h2 class="cs-title">Case Studies</h2>
         <p class="cs-body">See others we've helped.</p>
       </div>
-      <a class="cs-pill" href="case-studies.html">View all case studies <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M2 6h8M7 3l3 3-3 3"/></svg></a>
     </div>
     <div class="cs-wrap tiles" id="moreTiles"></div>
   </section>
@@ -573,7 +572,7 @@ body.sheet-open .nav{opacity:0;pointer-events:none}
   </div>
 </div>
 
-<script src="assets/cases.js"></script>
+<script src="assets/cases.js?v=3"></script>
 <script>
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -682,7 +681,7 @@ body.sheet-open .nav{opacity:0;pointer-events:none}
   });
 
   /* ── MORE CASE STUDIES ─────────── */
-  if (window.renderCaseTiles) renderCaseTiles($('moreTiles'), { exclude: 'idea', limit: 3 });
+  if (window.renderCaseTiles) renderCaseTiles($('moreTiles'), { exclude: 'idea', limit: 3, noLinks: true });
 
   /* ── LEAD CARD (demo: no submission yet) ── */
   var lead = $('lead'), form = $('leadForm'), chips = Array.prototype.slice.call(lead.querySelectorAll('.chip'));

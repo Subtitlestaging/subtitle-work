@@ -541,7 +541,7 @@ html{scroll-behavior:smooth}
     }
     for (var k = cur.length - 1; k >= next.length; k--) parent.removeChild(cur[k]);
   }
-  function fresh(n){ if (n.nodeType !== 1) return; bindEvents(n); if ('value' in n._props) n.value = n._props.value; for (var c = n.firstChild; c; c = c.nextSibling) fresh(c); }
+  function fresh(n){ if (n.nodeType !== 1) return; bindEvents(n); if (n.localName === 'video' && n.hasAttribute('muted')) { n.muted = true; n.defaultMuted = true; } if ('value' in n._props) n.value = n._props.value; for (var c = n.firstChild; c; c = c.nextSibling) fresh(c); }
   window.DCLogic = function(props){ this.props = props || {}; this.state = {}; };
   DCLogic.prototype.setState = function(p){ var s = typeof p === 'function' ? p(this.state, this.props) : p; for (var k in s) this.state[k] = s[k]; schedule(); };
   DCLogic.prototype.forceUpdate = function(){ schedule(); };
@@ -569,6 +569,7 @@ class Component extends DCLogic {
       this._onScroll = onScroll;
       window.addEventListener('scroll', onScroll, { passive: true });
       onScroll();
+      doc.querySelectorAll('video[autoplay]').forEach((v) => { v.muted = true; const p = v.play(); if (p && p.catch) p.catch(() => {}); });
       const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduce || !('IntersectionObserver' in window)) return;
       const els = Array.from(doc.querySelectorAll('.rv, .rv-s'));
